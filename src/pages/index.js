@@ -2,11 +2,14 @@ import React, { useState } from "react"
 import Layout from "../components/layout"
 import { ReactMic } from 'react-mic';
 
+// Declaring required global variables
+
 let audio;
 let interval;
 const audioChunks = [];
 let audioBlob;
 
+// Seperated styles
 
 const styles = {
   button: {
@@ -31,35 +34,15 @@ const styles = {
   },
 }
 
+// Main function is IntexPage, which is exported at last.
+
 const IndexPage = () => {
 
+  // ReactJs has state properties, so we can use to set values
   const [isRecording, setIsRecording] = useState(false);
   const [size, setSize] = useState(0);
 
-
-  const onData = async (e) => {
-    await audioChunks.push(e);
-  }
-
-  const onStop = async () => {
-    const audioUrl = URL.createObjectURL(audioBlob);
-    audio = new Audio(audioUrl);
-  }
-
-
-  const play = () => {
-    if (audio) audio.play();
-  }
-
-
-
-  function bytesToSize(bytes) {
-    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes == 0) return '0 Byte';
-    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-  }
-
+  // Whwn start recording this function calls and executes interval to send datas to server
   const record = () => {
     interval = setInterval(() => {
       send()
@@ -67,17 +50,12 @@ const IndexPage = () => {
     setIsRecording(true);
   }
 
-  const pause = () => {
-    clearInterval(interval);
-    setIsRecording(false);
+// When recording this function give chunk datas
+  const onData = async (e) => {
+    await audioChunks.push(e);
   }
 
-  const twilio = () => {
-    fetch('http://localhost:5000/call', {
-      method: 'GET',
-    }).then(data => console.log(data)).catch(err => console.log(err))
-  }
-
+  // this function executes every 5 secs after record starts and updates audio size
   const send = async () => {
     audioBlob = new Blob(audioChunks);
     let temp = audioBlob.size;
@@ -90,6 +68,40 @@ const IndexPage = () => {
     }
     const response = await fetch('http://localhost:5000/post', options);
   }
+
+ // When audio record stop, this function will give audio file
+  const onStop = async () => {
+    const audioUrl = URL.createObjectURL(audioBlob);
+    audio = new Audio(audioUrl);
+  }
+
+// Play the current audio
+  const play = () => {
+    if (audio) audio.play();
+  }
+
+  // This function is used to convert audio size in bytes into readable size
+  function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+  }
+
+  // This function is called, when we press stop
+  const pause = () => {
+    clearInterval(interval);
+    setIsRecording(false);
+  }
+
+  // This is the function to run twilio function
+  const twilio = () => {
+    fetch('http://localhost:5000/call', {
+      method: 'GET',
+    }).then(data => console.log(data)).catch(err => console.log(err))
+  }
+
+  
 
 
   return (
