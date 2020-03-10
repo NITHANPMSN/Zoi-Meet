@@ -30,7 +30,7 @@ app.get('/call', (req, res) => {
       console.log(call)
       client.calls(call.sid).recordings.create().then(rec =>
         console.log(rec, 'rec')
-        //   client.recordings(`${rec.sid}`)
+        //   client.recordings(`${rec.sid}`) 
         //     .fetch()
         //     .then(msg => console.log(msg, 'msg'))
         //     .catch(err => console.log('err', err))
