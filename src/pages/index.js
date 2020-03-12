@@ -66,7 +66,7 @@ const IndexPage = () => {
       mode: 'no-cors',
       headers: { 'content-type': '*' }
     }
-    const response = await fetch('http://localhost:5000/post', options);
+    const response = await fetch('http://localhost:8080/post', options);
   }
 
  // When audio record stop, this function will give audio file
@@ -96,7 +96,7 @@ const IndexPage = () => {
 
   // This is the function to run twilio function
   const twilio = () => {
-    fetch('http://localhost:5000/call', {
+    fetch('http://localhost:8080/call', {
       method: 'GET',
     }).then(data => console.log(data)).catch(err => console.log(err))
   }
